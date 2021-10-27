@@ -52,15 +52,14 @@ const ActiveChat = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const conversation = 
-    state.conversations.find(
-      (conversation) => conversation.otherUser.username === state.activeConversation
-    )
-  
-  return {
-    user: state.user,
-    conversation: {...conversation}
-  };
+    return {
+      user: state.user,
+      conversation:
+        state.conversations &&
+        state.conversations.find(
+          (conversation) => conversation.otherUser.username === state.activeConversation
+        )
+    };
 };
 
 export default connect(mapStateToProps, null)(ActiveChat);
