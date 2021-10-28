@@ -6,6 +6,7 @@ import {
   setNewMessage,
   setSearchedUsers,
 } from "../conversations";
+import { setActiveChat } from "../activeConversation"
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -117,3 +118,14 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const setActiveUser = (users) => async (dispatch) => {
+  const { user, otherUser } = users;
+  
+  socket.emit("set-active-user", {
+    user,
+    otherUser
+  });
+
+  dispatch(setActiveChat(otherUser))
+}
