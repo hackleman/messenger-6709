@@ -35,6 +35,17 @@ export const addOnlineUserToStore = (state, id) => {
   });
 };
 
+export const setActiveUserToStore = (state, user) => {
+  return state.map((convo) => {
+    if (convo.otherUser.username === user.user) {
+      const convoCopy  = { ...convo };
+      convoCopy.otherUser.active = user.active;
+      return convoCopy
+    }
+
+    return convo
+  })
+}
 export const removeOfflineUserFromStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
