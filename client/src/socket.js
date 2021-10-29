@@ -23,7 +23,7 @@ socket.on("connect", () => {
   socket.on("set-active-user", (users) => {
     const { user, otherUser } = users;
     let active = false;
-    if (otherUser === store.getState().user.username) {
+    if (otherUser === store.getState().user.id) {
       active = true
     }
     store.dispatch(setActiveUser({

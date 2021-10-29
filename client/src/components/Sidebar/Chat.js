@@ -25,9 +25,10 @@ const Chat = (props) => {
   const { otherUser } = conversation;
 
   const handleClick = async () => {
-    await props.setActiveChat({
-      user: props.user.username,
-      otherUser: otherUser.username
+    await props.setActiveUser({
+      user: props.user,
+      recipient: otherUser,
+      conversationId: props.conversation.id
     });
   };
 
@@ -46,7 +47,7 @@ const Chat = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setActiveChat: (id) => {
+    setActiveUser: (id) => {
       dispatch(setActiveUser(id));
     }
   };
