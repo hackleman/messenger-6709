@@ -48,10 +48,14 @@ router.post("/", async (req, res, next) => {
 router.put("/", async (req, res, next) => {
   try {
     if (!req.body) {
-      return res.sendStatus(401);
+      return res.sendStatus(401)
     }
 
     const { recipient, user, conversationId } = req.body;
+
+    if (!req.body.conversationId) {
+      return res.json({ user, recipient });
+    }
 
     await Message.update(
       {
