@@ -125,6 +125,13 @@ const updateReadMessages = async (body) => {
   return data;
 };
 
+const sendReadData = ({ user, otherUser}) => {
+  socket.emit("update-read-data", {
+    user,
+    otherUser,
+  })
+}
+
 const sendActiveUser = ({ user, otherUser }) => {
   socket.emit("set-active-user", {
     user,
@@ -135,6 +142,7 @@ const sendActiveUser = ({ user, otherUser }) => {
 
 export const setActiveUser = (body) => async (dispatch) => {
   try {
+    // sets read receipts in DB
     const data = await updateReadMessages(body)
 
     const users = {
@@ -142,6 +150,8 @@ export const setActiveUser = (body) => async (dispatch) => {
       otherUser: data.recipient.id
     }
 
+    // update read receipts in store
+    sendReadData(users)
     sendActiveUser(users)
 
     dispatch(setActiveChat(data.recipient.username))

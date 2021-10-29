@@ -44,6 +44,10 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("set-active-user", user)
   })
 
+  socket.on("update-read-data", (data) => {
+    socket.broadcast.emit("update-read-data", data)
+  })
+
   socket.on("new-message", (data) => {
     socket.broadcast.emit("new-message", {
       message: data.message,

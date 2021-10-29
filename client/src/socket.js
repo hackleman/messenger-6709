@@ -4,7 +4,8 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
-  setActiveUser
+  setActiveUser,
+  updateReadData
 } from "./store/conversations";
 
 const socket = io(window.location.origin);
@@ -31,6 +32,15 @@ socket.on("connect", () => {
       active
     }))
   })
+
+  socket.on("update-read-data", (data) => {
+    const { otherUser } = data;
+
+    if (otherUser === store.getState().user.id) {
+      store.dispatch(updateReadData(data))
+    }
+  })
+
   socket.on("new-message", (data) => {
     store.dispatch(setNewMessage(data.message, data.sender));
   });
