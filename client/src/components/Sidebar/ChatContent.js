@@ -47,6 +47,7 @@ const ChatContent = (props) => {
 
     // get count if latest message is unread
     if (
+      latest &&
       latest.senderId === props.conversation.otherUser.id &&
       latest.read === false
     ) {
