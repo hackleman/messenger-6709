@@ -130,11 +130,8 @@ const sendReadData = (users) => {
   socket.emit("update-read-data", users)
 }
 
-const sendActiveUser = ({ user, otherUser }) => {
-  socket.emit("set-active-user", {
-    user,
-    otherUser
-  });
+const sendActiveUser = (users) => {
+  socket.emit("set-active-user", users);
 
 }
 
