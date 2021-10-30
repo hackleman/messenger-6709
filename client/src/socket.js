@@ -34,9 +34,9 @@ socket.on("connect", () => {
   })
 
   socket.on("update-read-data", (data) => {
-    const { otherUser } = data;
+    const { user2 } = data;
 
-    if (otherUser === store.getState().user.id) {
+    if (user2 === store.getState().user.id) {
       store.dispatch(updateReadData(data))
     }
   })

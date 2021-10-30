@@ -25,10 +25,10 @@ export const addMessageToStore = (state, payload) => {
 
 export const updateReadMessagesInStore = (state, data) => {
   return state.map((convo) => {
-    if(convo.otherUser.id === data.user) {
+    if(convo.otherUser.id === data.user1) {
       const convoCopy = { ...convo };
       convoCopy.messages.map(message => {
-        if (message.senderId === data.otherUser) {
+        if (message.senderId === data.user2) {
           message.read = true
         }
         return message

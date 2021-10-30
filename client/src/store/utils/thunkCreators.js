@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  updateReadData
 } from "../conversations";
 import { setActiveChat } from "../activeConversation"
 import { gotUser, setFetchingStatus } from "../user";
@@ -125,11 +126,8 @@ const updateReadMessages = async (body) => {
   return data;
 };
 
-const sendReadData = ({ user, otherUser}) => {
-  socket.emit("update-read-data", {
-    user,
-    otherUser,
-  })
+const sendReadData = (users) => {
+  socket.emit("update-read-data", users)
 }
 
 const sendActiveUser = ({ user, otherUser }) => {
@@ -146,13 +144,19 @@ export const setActiveUser = (body) => async (dispatch) => {
     const data = await updateReadMessages(body)
 
     const users = {
-      user: data.user.id,
-      otherUser: data.recipient.id
+      user1: data.user.id,
+      user2: data.recipient.id
     }
 
-    // update read receipts in store
-    sendReadData(users)
     sendActiveUser(users)
+    // update read data for receiving user
+    sendReadData(users)
+
+    // update read data for sending user
+    dispatch(updateReadData({
+      user1: data.recipient.id,
+      user2: data.recipient.id,
+    }))
 
     dispatch(setActiveChat(data.recipient.username))
   } catch (error) {
