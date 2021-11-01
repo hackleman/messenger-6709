@@ -6,7 +6,6 @@ import {
   addOnlineUser,
   setActiveUser,
   updateReadData,
-  updateReadCount
 } from "./store/conversations";
 
 const socket = io(window.location.origin);
@@ -23,13 +22,12 @@ socket.on("connect", () => {
   });
 
   socket.on("set-active-user", (users) => {
-    const { user1, user2 } = users;
     let active = false;
-    if (user2 === store.getState().user.id) {
+    if (users.user2 === store.getState().user.id) {
       active = true
     }
     store.dispatch(setActiveUser({
-      user: user1,
+      user: users.user1,
       active
     }))
   })
@@ -43,8 +41,10 @@ socket.on("connect", () => {
   })
 
   socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.sender));
-    store.dispatch(updateReadCount(data.message.senderId));
+    store.dispatch(setNewMessage(
+      data.message, 
+      data.sender
+    ));
   });
 });
 
