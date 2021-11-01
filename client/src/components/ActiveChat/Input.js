@@ -34,7 +34,7 @@ const Input = (props) => {
       recipientId: otherUser.id,
       conversationId,
       sender: conversationId ? null : user,
-      read: otherUser.active ? true : false
+      read: otherUser.active
     };
     await postMessage(reqBody);
     setText("");
