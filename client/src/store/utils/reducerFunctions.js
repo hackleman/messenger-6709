@@ -39,6 +39,42 @@ export const updateReadMessagesInStore = (state, data) => {
   })
 };
 
+export const updateReadCountInStore = (state, user) => {
+  return state.map((convo) => {
+    if (convo.otherUser.id === user) {
+
+      if (convo.messages.length > 0) {
+        const convoCopy = { ...convo }
+        const messages = convoCopy.messages
+        const latest = messages[messages.length - 1]
+        let unreadCount = 0;
+
+        if (
+          latest && 
+          latest.senderId === user &&
+          latest.read === false
+        ) {
+          for (let i = messages.length - 1; i >= 0; i--) {
+            if (
+              messages[i].senderId === user &&
+              messages[i].read === false
+            ) {
+              unreadCount += 1
+            } else {
+              break;
+            }
+          }
+        }
+
+        convoCopy.unreadCount = unreadCount;
+        return convoCopy
+      }
+      return convo
+    }
+    return convo
+  })
+}
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {

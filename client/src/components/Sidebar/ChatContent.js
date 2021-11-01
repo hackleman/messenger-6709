@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -34,58 +34,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChatContent = (props) => {
-  const [displayUnread, setDisplayUnread] = useState(false)
-  const [unreadMessageCount, setUnreadMessageCount] = useState(0)
-
   const classes = useStyles();
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const { latestMessageText, otherUser, unreadCount } = conversation;
   
-  useEffect(() => {
-    const messages = props.conversation.messages;
-    const latest = messages[messages.length - 1];
-
-    // get count if latest message is unread
-    if (
-      latest &&
-      latest.senderId === props.conversation.otherUser.id &&
-      latest.read === false
-    ) {
-      let count = 0;
-
-      for(let i = messages.length - 1; i >= 0; i--) {
-        if (
-          messages[i].senderId === props.conversation.otherUser.id &&
-          messages[i].read === false
-        ) {
-          count += 1
-        } else {
-          break;
-        }
-      }
-
-      setUnreadMessageCount(count)
-      setDisplayUnread(true)
-    } else {
-      setDisplayUnread(false)
-    }
-  }, [props, classes.boldText])
-
   return (
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText} style={displayUnread ? {fontWeight: 800, color: "#000000"} : {fontWeight: 400}}>
+        <Typography className={classes.previewText} style={(unreadCount > 0) ? {fontWeight: 800, color: "#000000"} : {fontWeight: 400}}>
           {latestMessageText}
         </Typography>
       </Box>
       {
-        displayUnread ? 
+        (unreadCount > 0) && 
           <Box className={classes.unreadBubble}>
-            { unreadMessageCount }
-          </Box> : <></>
+            { unreadCount }
+          </Box>
       }
 
     </Box>

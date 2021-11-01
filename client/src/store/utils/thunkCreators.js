@@ -5,7 +5,8 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  updateReadData
+  updateReadData,
+  updateReadCount
 } from "../conversations";
 import { setActiveChat } from "../activeConversation"
 import { gotUser, setFetchingStatus } from "../user";
@@ -75,6 +76,10 @@ export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
     dispatch(gotConversations(data));
+
+    data.forEach(convo => {
+      dispatch(updateReadCount(convo.otherUser.id))
+    })
   } catch (error) {
     console.error(error);
   }
@@ -145,17 +150,18 @@ export const setActiveUser = (body) => async (dispatch) => {
       user2: data.recipient.id
     }
 
+    // set active conversation
+    dispatch(setActiveChat(data.recipient.username))
     sendActiveUser(users)
-    // update read data for receiving user
-    sendReadData(users)
 
-    // update read data for sending user
+    // update read data
     dispatch(updateReadData({
       user1: data.recipient.id,
       user2: data.recipient.id,
     }))
+    dispatch(updateReadCount(data.recipient.id))
 
-    dispatch(setActiveChat(data.recipient.username))
+    sendReadData(users)
   } catch (error) {
     console.error(error)
   }
