@@ -121,39 +121,27 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 const updateReadMessages = async (body) => {
-  const { data } = await axios.put("/api/messages", body);
+  const { data } = await axios.put("/api/conversations", body);
 
   return data;
 };
 
-const sendReadData = (users) => {
-  socket.emit("update-read-data", users)
-}
-
-const sendActiveChat = (users) => {
-  socket.emit("set-active-user", users);
-}
-
-export const setActiveUser = (body) => async (dispatch) => {
+export const setActiveConversation = (body) => async (dispatch) => {
   try {
-    // sets read receipts in DB
-    const data = await updateReadMessages(body)
+    await updateReadMessages(body)
 
     const users = {
-      user1: data.user.id,
-      user2: data.recipient.id
+      user: body.user.id,
+      recipient: body.recipient.id
     }
+    // update active conversation
+    dispatch(setActiveChat(body.recipient.username))
+    socket.emit("set-active-user", users);
 
     // update read data
-    dispatch(updateReadData({
-      user1: data.recipient.id,
-      user2: data.recipient.id,
-    }))
-    sendReadData(users)
+    dispatch(updateReadData(body.recipient.username))
+    socket.emit("update-read-data", users)
 
-    // update active conversation
-    dispatch(setActiveChat(data.recipient.username))
-    sendActiveChat(users)
   } catch (error) {
     console.error(error)
   }

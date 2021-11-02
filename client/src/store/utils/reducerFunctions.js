@@ -1,5 +1,5 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, recipient, sender } = payload;
 
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
@@ -8,9 +8,12 @@ export const addMessageToStore = (state, payload) => {
       otherUser: sender,
       messages: [message],
     };
-    
-    if (!message.read && message.senderId === newConvo.otherUser.id) {
-      newConvo.unreadCount = 1
+
+    if (!message.read && recipient) {
+      newConvo.unreadCount = 1;
+    }
+    if (message.read && !recipient) {
+      newConvo.lastMessageRead = message.id
     }
 
     newConvo.latestMessageText = message.text;
@@ -22,9 +25,14 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = {...convo}
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      if (!message.read && message.senderId === convo.otherUser.id) {
-        convoCopy.unreadCount += 1
+
+      if (!message.read && recipient) {
+        convoCopy.unreadCount += 1;
       }
+      if (message.read && !recipient) {
+        convoCopy.lastMessageRead = message.id
+      }
+
       return convoCopy;
     } else {
       return convo;
@@ -32,17 +40,27 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
-export const updateReadMessagesInStore = (state, data) => {
+export const updateReadMessagesInStore = (state, user) => {
   return state.map((convo) => {
-    if(convo.otherUser.id === data.user1) {
-      const convoCopy = { ...convo };
-      convoCopy.messages.map(message => {
-        if (message.senderId === data.user2) {
-          message.read = true
-        }
-        return message
-      })
+    if (convo.otherUser.username === user) {
+      const convoCopy = { ...convo }
       convoCopy.unreadCount = 0
+      return convoCopy;
+    }
+    return convo
+  })
+};
+
+export const updateOtherMessagesInStore = (state, users) => {
+  return state.map((convo) => {
+    if (convo.otherUser.id === users.user) {
+      const convoCopy = { ...convo }
+      const messages = convoCopy.messages.filter(message => message.senderId === users.recipient)
+      if (messages.length > 0) {
+        const latestMessage = messages[messages.length - 1]
+        latestMessage.read = true
+        convoCopy.lastMessageRead = latestMessage.id
+      }
       return convoCopy
     }
     return convo
@@ -61,17 +79,6 @@ export const addOnlineUserToStore = (state, id) => {
   });
 };
 
-export const setActiveUserToStore = (state, { user, active }) => {
-  return state.map((convo) => {
-    if (convo.otherUser.id === user) {
-      const convoCopy  = { ...convo };
-      convoCopy.otherUser.active = active;
-      return convoCopy
-    }
-
-    return convo
-  })
-}
 export const removeOfflineUserFromStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {

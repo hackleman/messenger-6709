@@ -1,11 +1,11 @@
 import {
   addNewConvoToStore,
   addOnlineUserToStore,
-  setActiveUserToStore,
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
   updateReadMessagesInStore,
+  updateOtherMessagesInStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -13,8 +13,8 @@ import {
 const GET_CONVERSATIONS = "GET_CONVERSATIONS";
 const SET_MESSAGE = "SET_MESSAGE";
 const UPDATE_READ_DATA = "UPDATE_READ_DATA";
+const UPDATE_OTHER_READ_DATA = "UPDATE_OTHER_READ_DATA"
 const ADD_ONLINE_USER = "ADD_ONLINE_USER";
-const SET_ACTIVE_USER = "SET_ACTIVE_USER";
 const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
@@ -29,17 +29,24 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender) => {
+export const setNewMessage = (message, recipient, sender) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null},
+    payload: { message, recipient, sender: sender || null},
   };
 };
 
-export const updateReadData = (data) => {
+export const updateReadData = (user) => {
   return {
     type: UPDATE_READ_DATA,
-    data
+    user
+  }
+}
+
+export const updateOtherReadData = (users) => {
+  return {
+    type: UPDATE_OTHER_READ_DATA,
+    users
   }
 }
 
@@ -50,12 +57,6 @@ export const addOnlineUser = (id) => {
   };
 };
 
-export const setActiveUser = (user) => {
-  return {
-    type: SET_ACTIVE_USER,
-    user
-  }
-}
 export const removeOfflineUser = (id) => {
   return {
     type: REMOVE_OFFLINE_USER,
@@ -93,12 +94,11 @@ const reducer = (state = [], action) => {
     case SET_MESSAGE:
       return addMessageToStore(state, action.payload);
     case UPDATE_READ_DATA:
-      return updateReadMessagesInStore(state, action.data);
+      return updateReadMessagesInStore(state, action.user);
+    case UPDATE_OTHER_READ_DATA:
+      return updateOtherMessagesInStore(state, action.users);
     case ADD_ONLINE_USER: {
       return addOnlineUserToStore(state, action.id);
-    }
-    case SET_ACTIVE_USER: {
-      return setActiveUserToStore(state, action.user)
     }
     case REMOVE_OFFLINE_USER: {
       return removeOfflineUserFromStore(state, action.id);
