@@ -45,8 +45,9 @@ const Chat = (props) => {
       color="primary"
       badgeContent={conversation.unreadCount}
       className={classes.badge}
+      onClick={() => handleClick(conversation)}
     >
-      <Box onClick={() => handleClick(conversation)} className={classes.root}>
+      <Box  className={classes.root}>
         <BadgeAvatar
           photoUrl={otherUser.photoUrl}
           username={otherUser.username}

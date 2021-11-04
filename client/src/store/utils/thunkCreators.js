@@ -128,7 +128,9 @@ const updateReadMessages = async (body) => {
 
 export const setActiveConversation = (body) => async (dispatch) => {
   try {
-    await updateReadMessages(body)
+    if (body && body.conversationId) {
+      await updateReadMessages(body)
+    }
 
     const users = {
       user: body.user.id,

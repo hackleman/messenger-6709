@@ -112,15 +112,15 @@ router.get("/", async (req, res, next) => {
 
 router.put("/", async (req, res, next) => {
   try {
-    const { recipient, user, conversationId } = req.body;
-
-    if (!req.body) {
+    if (!req.user) {
       return res.sendStatus(401)
     }
 
-    if (!req.body.conversationId) {
-      return res.sendStatus(204);
+    if (!req.body || !req.body.conversationId) {
+      return res.sendStatus(400)
     }
+
+    const { recipient, user, conversationId } = req.body;
 
     const convo = await Conversation.findOne(
       {where: conversationId}
