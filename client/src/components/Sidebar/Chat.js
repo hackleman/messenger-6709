@@ -1,12 +1,13 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveConversation } from "../../store/utils/thunkCreators";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  badge: {
+    verticalAlign: 'center',
     borderRadius: 8,
     height: 80,
     boxShadow: "0 2px 10px 0 rgba(88,133,196,0.05)",
@@ -15,7 +16,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     "&:hover": {
       cursor: "grab"
+    },
+    '& .MuiBadge-anchorOriginTopRightRectangle': {
+      top: '2.5rem'
     }
+  },
+  root: {
+    display: "flex",
+    alignItems: "center",
   }
 }));
 
@@ -33,15 +41,21 @@ const Chat = (props) => {
   };
 
   return (
-    <Box onClick={() => handleClick(conversation)} className={classes.root}>
-      <BadgeAvatar
-        photoUrl={otherUser.photoUrl}
-        username={otherUser.username}
-        online={otherUser.online}
-        sidebar={true}
-      />
-      <ChatContent conversation={conversation} />
-    </Box>
+    <Badge
+      color="primary"
+      badgeContent={conversation.unreadCount}
+      className={classes.badge}
+    >
+      <Box onClick={() => handleClick(conversation)} className={classes.root}>
+        <BadgeAvatar
+          photoUrl={otherUser.photoUrl}
+          username={otherUser.username}
+          online={otherUser.online}
+          sidebar={true}
+        />
+        <ChatContent conversation={conversation} />
+     </Box>
+    </Badge>
   );
 };
 

@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    justifyContent: "space-between",
+    flexDirection: "column",
     marginLeft: 20,
     marginRight: 20,
     flexGrow: 1,
@@ -23,18 +23,6 @@ const useStyles = makeStyles((theme) => ({
     color: '#000000',
     fontWeight: 800
   },
-  unreadBubble: {
-    fontSize: 12,
-    fontWeight: "bold",
-    backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
-    borderRadius: "50%",
-    display: "flex",
-    justifyContent: "center",
-    alignSelf: "center",
-    width: 18,
-    height: 18,
-    color: '#ffffff'
-  }
 }));
 
 const ChatContent = (props) => {
@@ -44,23 +32,14 @@ const ChatContent = (props) => {
   
   return (
     <Box className={classes.root}>
-      <Box>
-        <Typography className={classes.username}>
-          {otherUser.username}
-        </Typography>
-        <Typography 
-          className={[classes.previewText, (unreadCount > 0) && classes.boldText]}
-        >
-          {latestMessageText}
-        </Typography>
-      </Box>
-      {
-        (unreadCount > 0) && 
-          <Box className={classes.unreadBubble}>
-            { unreadCount }
-          </Box>
-      }
-
+      <Typography className={classes.username}>
+        {otherUser.username}
+      </Typography>
+      <Typography 
+        className={[classes.previewText, (unreadCount > 0) && classes.boldText]}
+      >
+        {latestMessageText}
+      </Typography>
     </Box>
   );
 };
