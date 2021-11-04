@@ -5,7 +5,9 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  updateReadData,
 } from "../conversations";
+import { setActiveChat } from "../activeConversation"
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -117,3 +119,32 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+const updateReadMessages = async (body) => {
+  const { data } = await axios.put("/api/conversations", body);
+
+  return data;
+};
+
+export const setActiveConversation = (body) => async (dispatch) => {
+  try {
+    if (body && body.conversationId) {
+      await updateReadMessages(body)
+    }
+
+    const users = {
+      user: body.user.id,
+      recipient: body.recipient.id
+    }
+    // update active conversation
+    dispatch(setActiveChat(body.recipient.username))
+    socket.emit("set-active-user", users);
+
+    // update read data
+    dispatch(updateReadData(body.recipient.username))
+    socket.emit("update-read-data", users)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
